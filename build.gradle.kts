@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import ratpack.gradle.RatpackExtension
 
 plugins {
     kotlin("jvm") version "1.3.41"
@@ -33,7 +34,9 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     testCompile("junit:junit:4.11")
     runtime("org.slf4j:slf4j-simple:1.7.21")
-}
+    project.extensions.getByType(RatpackExtension::class.java).let { ratpack ->
+        compile(ratpack.dependency("guice"))
+    }}
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
