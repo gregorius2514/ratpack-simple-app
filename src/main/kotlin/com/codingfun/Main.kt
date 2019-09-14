@@ -15,7 +15,13 @@ class Main {
                 }
             )
             .handlers { chain ->
-                chain.get { ctx -> ctx.render("Welcome to Ratpack") }
+                chain.get { ctx -> 
+               
+                    val handler = ctx.get(ReqHandler::class.java)
+                    handler.helloWorld()
+                    ctx.render("Welcome to Ratpack") 
+                
+                }
             }
         }
     }
@@ -27,4 +33,12 @@ fun main() {
 
 class ReqHandler @Inject constructor(private val request: Request) {
 
+    fun helloWorld() {
+        val hCookie = request.headers.get("Cookie").split("=").toTypedArray()
+        
+        val cookieName = hCookie[0]
+        val cookieValue = hCookie[1]
+        
+        println("Hello world cookie: , $cookieValue")
+    }
 }
