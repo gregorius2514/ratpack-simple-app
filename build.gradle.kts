@@ -1,45 +1,28 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import ratpack.gradle.RatpackExtension
 
 plugins {
-    kotlin("jvm") version "1.3.41"
+    java
     application
+    kotlin("jvm") version "1.3.72"
 }
 
-group = "com.codingfun"
-version = "1.0"
-
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath("io.ratpack:ratpack-gradle:1.4.5")
-    }
-}
-
-apply(plugin = "io.ratpack.ratpack-java")
-
-application {
-    mainClassName = "com.codingfun.Main.kt"
-}
+group = "com.example"
+version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    testCompile("junit:junit:4.11")
-    runtime("org.slf4j:slf4j-simple:1.7.21")
-    project.extensions.getByType(RatpackExtension::class.java).let { ratpack ->
-        compile(ratpack.dependency("guice"))
-    }}
+    implementation(kotlin("stdlib"))
+    implementation("io.ratpack:ratpack-core:1.8.0")
+    implementation("io.ratpack:ratpack-guice:1.8.0")
+}
+
+application {
+    mainClassName = "com.example.Main"
+}
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
-
-
