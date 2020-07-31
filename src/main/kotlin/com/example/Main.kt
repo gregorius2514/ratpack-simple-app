@@ -1,14 +1,7 @@
 package com.example
 
-import com.google.inject.Inject
-import com.google.inject.Provider
-import ratpack.exec.Blocking
 import ratpack.guice.Guice
-import ratpack.handling.Context
-import ratpack.handling.Handler
-import ratpack.http.client.HttpClient
 import ratpack.server.RatpackServer
-import java.net.URI
 
 object Main {
 
@@ -27,32 +20,26 @@ object Main {
                                     .toProvider(ManualExecutorProvider::class.java)
                                     .asEagerSingleton()
                             }
+                            .bind(HttpAsync::class.java)
                     }.apply(it)
                 }
                 .handlers { chain ->
                     chain.prefix("hi") {
                         it.get(HelloWorldHandler::class.java)
                     }
+                    chain.prefix("bye") {
+                        it.all {
+                            it.byMethod {
+                                it.get { a ->
+                                    a.render("bye")
+                                }
+                                it.post { a ->
+                                    a.render("bye post")
+                                }
+                            }
+                        }
+                    }
                 }
         }
-    }
-}
-
-class HelloWorldHandler : Handler {
-    override fun handle(ctx: Context) {
-        ctx.render("hello world")
-    }
-}
-
-class ManualExecutor
-
-class ManualExecutorProvider @Inject constructor(
-    val httpClient: HttpClient
-) : Provider<ManualExecutor> {
-    override fun get(): ManualExecutor {
-        println("Manual executor provider")
-
-
-        return ManualExecutor()
     }
 }
