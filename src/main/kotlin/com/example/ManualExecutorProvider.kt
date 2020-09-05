@@ -3,33 +3,28 @@ package com.example
 import com.google.inject.Inject
 import com.google.inject.Provider
 import ratpack.exec.Blocking
-import ratpack.exec.Execution
 
 class ManualExecutorProvider @Inject constructor(
     val httpAsync: HttpAsync
 ) : Provider<ManualExecutor> {
+    companion object {
+        val list = mutableListOf<ManualExecutor>()
+    }
+
     override fun get(): ManualExecutor {
         println("Manual executor provider")
 
-        var response: String? = null
-        Execution.fork()
-            .start {
-                httpAsync.call()
-                    .then {
-                        response = it
-                    }
-            }
-
         Blocking.get {
-
             httpAsync.call()
-                .then { result ->
-                    response = result
+                .map {
+                    ManualExecutor(it)
+                }
+                .then {
+                    list.add(it)
                 }
         }
+        println("response: $list")
 
-        println("response: $response")
-
-        return ManualExecutor(response!!)
+        return ManualExecutor(list.first().response)
     }
 }
