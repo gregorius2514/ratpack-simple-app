@@ -1,7 +1,13 @@
 package com.example
 
+import ratpack.guice.BindingsSpec
 import ratpack.guice.Guice
+import ratpack.handling.Chain
+import ratpack.handling.Context
+import ratpack.handling.Handler
 import ratpack.server.RatpackServer
+
+private const val APPLICATION_INPUT_PORT = 5050
 
 object Main {
 
@@ -9,37 +15,33 @@ object Main {
     fun main(args: Array<String>) {
         RatpackServer.start { server ->
             server.serverConfig {
-                it.port(5050)
+                it.port(APPLICATION_INPUT_PORT)
             }
-                .registry {
-                    Guice.registry { binding ->
-                        binding
-                            .bind(HelloWorldHandler::class.java)
-                            .binder {
-                                it.bind(ManualExecutor::class.java)
-                                    .toProvider(ManualExecutorProvider::class.java)
-                                    .asEagerSingleton()
-                            }
-                            .bind(HttpAsync::class.java)
-                    }.apply(it)
-                }
-                .handlers { chain ->
-                    chain.prefix("hi") {
-                        it.get(HelloWorldHandler::class.java)
+                    .registry {
+                        Guice.registry { binding ->
+                            buildApplicationDependencies(binding)
+                        }.apply(it)
                     }
-                    chain.prefix("bye") {
-                        it.all {
-                            it.byMethod {
-                                it.get { a ->
-                                    a.render("bye")
-                                }
-                                it.post { a ->
-                                    a.render("bye post")
-                                }
-                            }
-                        }
+                    .handlers { chain ->
+                        defineApplicationHttpHandlers(chain)
                     }
-                }
         }
+    }
+
+    private fun defineApplicationHttpHandlers(chain: Chain) {
+        chain.prefix("hello"){
+            it.get(HelloWorldHandler::class.java)
+        }
+    }
+
+    private fun buildApplicationDependencies(binding: BindingsSpec) {
+        binding
+                .bind(HelloWorldHandler::class.java)
+    }
+}
+
+class HelloWorldHandler : Handler {
+    override fun handle(context: Context) {
+        context.render("helloWorld")
     }
 }
