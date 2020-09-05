@@ -3,8 +3,6 @@ package com.example
 import ratpack.guice.BindingsSpec
 import ratpack.guice.Guice
 import ratpack.handling.Chain
-import ratpack.handling.Context
-import ratpack.handling.Handler
 import ratpack.server.RatpackServer
 
 private const val APPLICATION_INPUT_PORT = 5050
@@ -40,8 +38,3 @@ object Main {
     }
 }
 
-class HelloWorldHandler : Handler {
-    override fun handle(context: Context) {
-        context.render("helloWorld")
-    }
-}

@@ -17,6 +17,8 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation("io.ratpack:ratpack-core:1.8.0")
     implementation("io.ratpack:ratpack-guice:1.8.0")
+    implementation("io.ratpack:ratpack-rx2:1.8.0")
+
 }
 
 application {
