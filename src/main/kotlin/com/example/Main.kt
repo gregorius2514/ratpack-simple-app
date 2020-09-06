@@ -35,6 +35,8 @@ object Main {
     private fun buildApplicationDependencies(binding: BindingsSpec) {
         binding
                 .bind(HelloWorldHandler::class.java)
+                .bind(SeedGenerator::class.java, TimeSeedGenerator::class.java)
+                .bind(DelayGenerator::class.java)
     }
 }
 
