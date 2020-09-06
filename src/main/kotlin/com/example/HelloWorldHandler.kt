@@ -19,7 +19,10 @@ class HelloWorldHandler @Inject constructor(
                         delayGenerator.units(),
                         Schedulers.trampoline()
                 )
-                .timeout(8, TimeUnit.SECONDS)
+                .timeout(2, TimeUnit.SECONDS)
+                .doOnError { error ->
+                    context.render("Error message")
+                }
                 .subscribe { text ->
                     context.render(text)
                 }
